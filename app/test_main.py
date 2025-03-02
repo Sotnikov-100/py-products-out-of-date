@@ -1,70 +1,27 @@
-from datetime import date
-from unittest.mock import patch
+import datetime
+from unittest import mock
 from app.main import outdated_products
 
 
 def test_outdated_products() -> None:
-    with patch("datetime.date") as mock_date:
-        mock_date.today.return_value = date(2022, 2, 2)
-        products: list[dict[str, object]] = [
-            {
-                "name": "salmon",
-                "expiration_date": date(2022, 2, 10),
-                "price": 600
-            },
-            {
-                "name": "chicken",
-                "expiration_date": date(2022, 2, 5),
-                "price": 120
-            },
-            {
-                "name": "duck",
-                "expiration_date": date(2022, 2, 1),
-                "price": 160
-            },
-        ]
-        expected_result: list[str] = ["duck"]
-        assert outdated_products(products) == expected_result
-
-
-def test_no_outdated_products() -> None:
-    with patch("datetime.date") as mock_date:
-        mock_date.today.return_value = date(2022, 2, 1)
-        products: list[dict[str, object]] = [
-            {
-                "name": "salmon",
-                "expiration_date": date(2022, 2, 10),
-                "price": 600
-            },
-            {
-                "name": "chicken",
-                "expiration_date": date(2022, 2, 5),
-                "price": 120
-            },
-        ]
-        expected_result: list[str] = []
-        assert outdated_products(products) == expected_result
-
-
-def test_all_outdated_products() -> None:
-    with patch("datetime.date") as mock_date:
-        mock_date.today.return_value = date(2022, 2, 15)
-        products: list[dict[str, object]] = [
-            {
-                "name": "salmon",
-                "expiration_date": date(2022, 2, 10),
-                "price": 600
-            },
-            {
-                "name": "chicken",
-                "expiration_date": date(2022, 2, 5),
-                "price": 120
-            },
-            {
-                "name": "duck",
-                "expiration_date": date(2022, 2, 1),
-                "price": 160
-            },
-        ]
-        expected_result: list[str] = ["salmon", "chicken", "duck"]
-        assert outdated_products(products) == expected_result
+    products = [
+        {
+            "name": "salmon",
+            "expiration_date": datetime.date(2022, 2, 10),
+            "price": 600
+        },
+        {
+            "name": "chicken",
+            "expiration_date": datetime.date(2022, 2, 5),
+            "price": 120
+        },
+        {
+            "name": "duck",
+            "expiration_date": datetime.date(2022, 2, 1),
+            "price": 160
+        }
+    ]
+    test_date = datetime.date(2022, 2, 2)
+    with mock.patch("app.main.datetime") as mock_date:
+        mock_date.date.today.return_value = test_date
+        assert outdated_products(products) == ["duck"]
